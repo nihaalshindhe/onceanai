@@ -1,0 +1,48 @@
+### IntelliJ IDEA ###
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+.kotlin
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+# Backend
+backend/venv/
+backend/__pycache__/
+backend/.env
+backend/db.sqlite3
+
+# Python bytecode
+*.pyc
+
+# Frontend
+frontend/node_modules/
+frontend/.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+.idea
+
+### Mac OS ###
+.DS_Store
