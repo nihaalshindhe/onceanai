@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, Header, Body
+from fastapi import APIRouter, HTTPException, Header, Body, Depends
 from fastapi.responses import StreamingResponse
-from database import SessionLocal
-from models import Project,Section,Revision
-from schemas import ProjectCreate,Refine
+from sqlalchemy.orm import Session
+from database import get_db
+from models import Project, Section, Revision
+from schemas import ProjectCreate, Refine
 from llm import generate_text
 import jwt, os, io
 from docx import Document
@@ -19,32 +20,25 @@ def get_user_id(token: str):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 @router.get("/sections/{project_id}")
-def get_sections(project_id: int, authorization: str = Header(...)):
+def get_sections(project_id: int, authorization: str = Header(...), db: Session = Depends(get_db)):
     token = authorization.replace("Bearer ", "")
     user_id = get_user_id(token)
-    db = SessionLocal()
     sections = db.query(Section).join(Project).filter(
         Section.project_id == project_id,
         Project.user_id == user_id
     ).all()
-    print(sections)
     return sections
 
-
-
-
 @router.get("/projects")
-def get_projects(authorization: str = Header(...)):
+def get_projects(authorization: str = Header(...), db: Session = Depends(get_db)):
     token = authorization.replace("Bearer ", "")
     user_id = get_user_id(token)
-    db = SessionLocal()
     projects = db.query(Project).filter(Project.user_id == user_id).all()
     return projects
 
 @router.post("/generate-doc")
-def generate_doc(data: ProjectCreate = Body(...), authorization: str = Header(...)):
+def generate_doc(data: ProjectCreate = Body(...), authorization: str = Header(...), db: Session = Depends(get_db)):
     token = authorization.replace("Bearer ", "")
-    db = SessionLocal()
     user_id = get_user_id(token)
 
     project = Project(
@@ -110,13 +104,10 @@ def generate_doc(data: ProjectCreate = Body(...), authorization: str = Header(..
     else:
         raise HTTPException(status_code=400, detail="Unsupported document type")
 
-
-
 @router.post("/refine")
-def refine_section(data: Refine = Body(...), authorization: str = Header(...)):
+def refine_section(data: Refine = Body(...), authorization: str = Header(...), db: Session = Depends(get_db)):
     token = authorization.replace("Bearer ", "")
     user_id = get_user_id(token)
-    db = SessionLocal()
 
     section = db.query(Section).join(Project).filter(
         Section.id == data.section_id,
@@ -146,12 +137,10 @@ def refine_section(data: Refine = Body(...), authorization: str = Header(...)):
 
     return {"updated_content": new_text}
 
-
 @router.post("/refine/approve")
-def approve_refinement(section_id: int = Body(...), doc_type: str = Body(...), authorization: str = Header(...)):
+def approve_refinement(section_id: int = Body(...), doc_type: str = Body(...), authorization: str = Header(...), db: Session = Depends(get_db)):
     token = authorization.replace("Bearer ", "")
     user_id = get_user_id(token)
-    db = SessionLocal()
 
     section = db.query(Section).join(Project).filter(
         Section.id == section_id,
@@ -166,10 +155,8 @@ def approve_refinement(section_id: int = Body(...), doc_type: str = Body(...), a
     if not latest_revision:
         raise HTTPException(status_code=400, detail="No refinement found")
 
-
     section.content = latest_revision.result
     db.commit()
-
 
     project = db.query(Project).filter(Project.id == section.project_id).first()
     if not project:
@@ -215,4 +202,3 @@ def approve_refinement(section_id: int = Body(...), doc_type: str = Body(...), a
 
     else:
         raise HTTPException(status_code=400, detail="Unsupported document type")
-

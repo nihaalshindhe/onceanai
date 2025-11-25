@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from schemas import Register, Login
-from database import SessionLocal
+from database import SessionLocal, get_db
 from models import User
 import jwt
 from dotenv import load_dotenv
@@ -12,9 +13,7 @@ router = APIRouter()
 SECRET = os.getenv("JWT_SECRET")
 
 @router.post("/register")
-def register(data: Register):
-    db = SessionLocal()
-
+def register(data: Register, db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.username == data.username).first()
     if existing:
         raise HTTPException(status_code=400, detail="Username already exists")
@@ -24,11 +23,8 @@ def register(data: Register):
     db.commit()
     return {"message": "User registered"}
 
-
 @router.post("/login")
-def login(data: Login):
-    db = SessionLocal()
-
+def login(data: Login, db: Session = Depends(get_db)):
     user = db.query(User).filter(
         User.username == data.username,
         User.password == data.password

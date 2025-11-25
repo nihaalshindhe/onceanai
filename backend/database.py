@@ -20,6 +20,12 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
-from models import User, Project, Section, Revision
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
+from models import User, Project, Section, Revision
 Base.metadata.create_all(bind=engine)
