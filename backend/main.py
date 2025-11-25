@@ -3,10 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth import router as auth_routes
 from generate import router as project_routes
 from export import router as export_routes
+import os
+from dotenv import load_dotenv
+load_dotenv()
+WEB_URL = os.getenv("WEB_URL")
 
 app = FastAPI()
 
-origins = ["*"]
+origins = [WEB_URL]
 
 app.add_middleware(
     CORSMiddleware,
