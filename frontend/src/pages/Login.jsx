@@ -31,11 +31,13 @@ export default function Login() {
 
             <div className="w-4/5 w-4xl text-center space-y-6 mb-12">
                 <h1 className="text-3xl font-bold" style={{color:'#323232'}}>
-                    HI. Thanks for checking my assigment!
+                    Hi. Thanks for checking my assigment!
                 </h1>
 
                 <p className="text-lg opacity-80 leading-relaxed mx-auto" style={{color:'#323232'}}>
-                    For the
+                    I use jwt for authentication which i saved in the local storage after login.
+                    and the routing is decided using the react router.
+
                 </p>
             </div>
 

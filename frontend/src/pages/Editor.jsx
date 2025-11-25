@@ -224,8 +224,18 @@ export default function Editor() {
                             </button>
                         </div>
                     )}
+                    <div style={{ marginTop: 40, padding: 20, fontSize: 14, color: "#323232", opacity: 0.8 }}>
+                        <p>
+                            The Refine with AI button sends your prompt and the selected
+                            section content to our backend endpoint. The AI generates an
+                            improved version, which appears above for review. If you approve it, the updated content
+                            replaces the original and the refined file is downloaded automatically.
+                        </p>
+                    </div>
+
                 </div>
             )}
+
         </div>
     );
 }

@@ -119,6 +119,9 @@ export default function CreateProject() {
                 <h1 className="text-3xl font-bold" style={{ color: "#323232" }}>Create a New Project</h1>
                 <p className="text-lg opacity-80 leading-relaxed mt-4" style={{ color: "#323232" }}>
                     Enter your topic, choose a document type, and define sections with individual prompts.
+                    <br/>
+                    Drag and drop to reorder sections as needed this is achieved using the DnD Kit library.
+                    once the type and topic is decided along with the sections, the create and download hits our backend endpoint to generate the document using AI.
                 </p>
             </div>
 
