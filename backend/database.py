@@ -1,12 +1,23 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from dotenv import load_dotenv
 
-DATABASE_URL = # will ad enev for this
+load_dotenv()
 
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
-
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 Base = declarative_base()
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+)
+
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+
+
+from models import User, Project, Section, Revision
+
+
+Base.metadata.create_all(bind=engine)
