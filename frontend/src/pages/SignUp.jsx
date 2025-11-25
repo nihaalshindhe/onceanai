@@ -2,7 +2,7 @@ import { useState } from "react";
 import API from "../api";
 import { useNavigate } from "react-router-dom";
 
-export default function Signup() {
+export default function SignUp() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
